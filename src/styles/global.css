@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --cafe-dark: #3c2f2f;
+    --cafe-light: #fff4e6;
+    --cafe-caramel: #d4a373;
+    --cafe-mocha: #8b5a2b;
+    --cafe-accent: #cd853f;
+  }
+  
+  body {
+    @apply bg-[#fff4e6] text-[#3c2f2f] overflow-x-hidden;
+  }
+}
+
+/* Custom modern scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cafe-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cafe-caramel);
+  border-radius: 4px;
+}
+
+/* Ticker Animation */
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-ticker {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker 30s linear infinite;
+}
+
+/* Pause the ticker when someone hovers over it to read */
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Add these below your ticker animation */
+
+@keyframes float {
+  0% { transform: translateY(0px) translateX(-50%); }
+  50% { transform: translateY(-10px) translateX(-50%); }
+  100% { transform: translateY(0px) translateX(-50%); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 163, 115, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(212, 163, 115, 0.8); }
+}
+
+.golden-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
