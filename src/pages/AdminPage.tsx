@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Navbar } from '../components/layout/Navbar';
 import { StatsRow } from '../components/admin/StatsRow';
 import { FilterTabs } from '../components/admin/FilterTabs';
 import { CouponTable } from '../components/admin/CouponTable';
