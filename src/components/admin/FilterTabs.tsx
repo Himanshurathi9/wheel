@@ -15,16 +15,25 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({ currentFilter, setFilter
   ];
 
   return (
-    <div className="flex gap-2 mb-6 p-1 bg-white inline-flex rounded-xl shadow-sm border border-gray-200">
+    <div className="flex gap-1.5 mb-5 p-1.5 rounded-2xl w-fit"
+         style={{ background: '#e2e8f0' }}>
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => setFilter(tab.id)}
-          className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
+          className="px-6 py-2.5 rounded-xl text-sm font-bold transition-all"
+          style={
             currentFilter === tab.id
-              ? 'bg-[#3c2f2f] text-[#fff4e6] shadow-md'
-              : 'text-gray-500 hover:text-[#3c2f2f] hover:bg-gray-50'
-          }`}
+              ? {
+                  background: '#c0392b',
+                  color: 'white',
+                  boxShadow: '0 2px 8px rgba(192,57,43,0.3)',
+                }
+              : {
+                  background: 'transparent',
+                  color: '#64748b',
+                }
+          }
         >
           {tab.label}
         </button>

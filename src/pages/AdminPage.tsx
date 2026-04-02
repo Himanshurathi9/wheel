@@ -4,73 +4,104 @@ import { StatsRow } from '../components/admin/StatsRow';
 import { FilterTabs } from '../components/admin/FilterTabs';
 import { CouponTable } from '../components/admin/CouponTable';
 import { useCoupons } from '../hooks/useCoupons';
-import { Lock } from 'lucide-react';
+import { Lock, KeyRound } from 'lucide-react';
 
 export default function AdminPage() {
   const { coupons, loadAllCoupons } = useCoupons();
   const [filter, setFilter] = useState<'all' | 'active' | 'expired'>('all');
-  
   const [isLocked, setIsLocked] = useState(true);
   const [pinInput, setPinInput] = useState('');
   const [error, setError] = useState(false);
-  
-  const STAFF_PIN = '2026'; 
 
-  // NEW: Check if already unlocked when the page loads/refreshes
+  const STAFF_PIN = '2026';
+
   useEffect(() => {
-    const isUnlocked = sessionStorage.getItem('kiar_admin_unlocked');
-    if (isUnlocked === 'true') {
+    if (sessionStorage.getItem('kiar_admin_unlocked') === 'true') {
       setIsLocked(false);
       loadAllCoupons();
     }
-  }, []); // Empty array means this only runs once when the page loads
+  }, []);
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
     if (pinInput === STAFF_PIN) {
       setIsLocked(false);
       setError(false);
-      sessionStorage.setItem('kiar_admin_unlocked', 'true'); // Save to session!
-      loadAllCoupons(); 
+      sessionStorage.setItem('kiar_admin_unlocked', 'true');
+      loadAllCoupons();
     } else {
       setError(true);
       setPinInput('');
     }
   };
 
-  // NEW: Securely lock the screen and clear the session
   const handleLock = () => {
     sessionStorage.removeItem('kiar_admin_unlocked');
     setIsLocked(true);
     setPinInput('');
   };
 
+  // ── LOCK SCREEN ──────────────────────────────
   if (isLocked) {
     return (
-      <div className="min-h-screen bg-[#fff4e6] flex flex-col items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-[#d4a373]/30 max-w-sm w-full text-center">
-          <div className="w-16 h-16 bg-[#3c2f2f] rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <Lock size={28} className="text-[#fff4e6]" />
+      <div
+        className="min-h-screen flex items-center justify-center p-4"
+        style={{ background: 'var(--ice)' }}
+      >
+        <div
+          className="w-full max-w-sm rounded-3xl p-8 text-center fade-up"
+          style={{
+            background: 'white',
+            border: '1.5px solid #e2e8f0',
+            boxShadow: '0 8px 40px rgba(13,33,87,0.1)',
+          }}
+        >
+          {/* Icon */}
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            style={{ background: '#0d2157' }}
+          >
+            <Lock size={26} className="text-white" />
           </div>
-          <h1 className="text-2xl font-black text-[#3c2f2f] mb-2">Staff Access</h1>
-          <p className="text-gray-500 text-sm mb-8 font-medium">Enter your PIN to view active cafe rewards.</p>
-          
-          <form onSubmit={handleUnlock}>
-            <input 
-              type="password" 
+
+          <h1 className="text-2xl font-bold mb-1" style={{ color: '#0d2157', fontFamily: 'var(--font-display)' }}>
+            Staff Access
+          </h1>
+          <p className="text-sm font-medium mb-7" style={{ color: '#64748b' }}>
+            Enter your PIN to view active cafe rewards.
+          </p>
+
+          <form onSubmit={handleUnlock} className="space-y-4">
+            <input
+              type="password"
               maxLength={4}
               value={pinInput}
-              onChange={(e) => setPinInput(e.target.value)}
+              onChange={e => setPinInput(e.target.value)}
               placeholder="••••"
-              className={`w-full text-center text-3xl tracking-[1em] font-mono font-bold p-4 rounded-xl border-2 outline-none transition-colors mb-4 ${
-                error ? 'border-red-400 bg-red-50 text-red-600' : 'border-[#d4a373]/50 focus:border-[#cd853f] bg-stone-50 text-[#3c2f2f]'
-              }`}
+              className="w-full text-center text-3xl tracking-[0.5em] font-bold py-4 rounded-2xl outline-none transition-all"
+              style={{
+                background: error ? '#fef2f2' : '#f8faff',
+                border: `2px solid ${error ? '#c0392b' : '#dbeafe'}`,
+                color: error ? '#c0392b' : '#0d2157',
+                fontFamily: 'monospace',
+              }}
+              onFocus={e => { if (!error) e.target.style.borderColor = '#2352c8'; }}
+              onBlur={e => { e.target.style.borderColor = error ? '#c0392b' : '#dbeafe'; }}
             />
-            {error && <p className="text-red-500 text-sm font-bold mb-4 animate-bounce">Incorrect PIN. Try again.</p>}
-            
-            <button 
+
+            {error && (
+              <p className="text-sm font-bold" style={{ color: '#c0392b' }}>
+                Incorrect PIN. Try again.
+              </p>
+            )}
+
+            <button
               type="submit"
-              className="w-full py-4 bg-[#3c2f2f] text-[#fff4e6] text-lg font-bold rounded-xl shadow-lg hover:bg-[#5a4646] active:translate-y-1 transition-all"
+              className="w-full py-4 rounded-2xl text-white font-bold text-[16px] tracking-wide transition-all active:scale-[0.98]"
+              style={{
+                background: 'linear-gradient(135deg, #1a3a8f 0%, #0d2157 100%)',
+                boxShadow: '0 8px 24px rgba(13,33,87,0.25)',
+              }}
             >
               Unlock Dashboard
             </button>
@@ -80,31 +111,54 @@ export default function AdminPage() {
     );
   }
 
+  // ── DASHBOARD ────────────────────────────────
   return (
-    <div className="min-h-screen bg-stone-50 font-sans pb-12">
-      <Navbar />
-      
-      <main className="max-w-6xl w-full mx-auto px-4 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="mb-8 flex justify-between items-end">
-          <div>
-            <h1 className="text-3xl font-black text-[#3c2f2f] tracking-tight">Staff Dashboard</h1>
-            <p className="text-gray-500 mt-1 font-medium">Verify customer rewards and track active coupons.</p>
+    <div className="min-h-screen" style={{ background: 'var(--ice)' }}>
+      {/* Dark navy header (matching screenshot 5) */}
+      <div style={{ background: 'var(--navy)' }}>
+        <div className="max-w-7xl mx-auto px-5 h-[72px] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+              <KeyRound size={18} className="text-white" />
+            </div>
+            <div>
+              <p className="text-white font-bold text-[17px] leading-none tracking-tight">Kiar Cafe</p>
+              <p className="text-white/50 text-[10px] font-semibold tracking-[0.18em] uppercase leading-none mt-0.5">Gurgaon</p>
+            </div>
           </div>
-          <button 
+          <button
             onClick={handleLock}
-            className="text-sm font-bold text-gray-400 hover:text-[#3c2f2f] transition-colors underline"
+            className="flex items-center gap-2 text-sm font-bold transition-all hover:opacity-80"
+            style={{ color: '#c0392b' }}
           >
+            <Lock size={14} />
             Lock Screen
           </button>
         </div>
+      </div>
 
-        <StatsRow coupons={coupons} />
-        
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
-          <FilterTabs currentFilter={filter} setFilter={setFilter} />
+      <main className="max-w-7xl mx-auto px-5 py-10">
+
+        {/* Title row */}
+        <div className="mb-8 fade-up">
+          <h1 className="text-3xl font-bold" style={{ color: '#0d2157', fontFamily: 'var(--font-display)' }}>
+            Staff Dashboard
+          </h1>
+          <p className="mt-1 font-medium" style={{ color: '#64748b' }}>
+            Verify customer rewards and track active coupons.
+          </p>
         </div>
 
-        <CouponTable coupons={coupons} filter={filter} />
+        {/* Stats */}
+        <div className="fade-up fade-up-1">
+          <StatsRow coupons={coupons} />
+        </div>
+
+        {/* Filter + Table */}
+        <div className="fade-up fade-up-2">
+          <FilterTabs currentFilter={filter} setFilter={setFilter} />
+          <CouponTable coupons={coupons} filter={filter} />
+        </div>
       </main>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Coupon } from '../../types';
 import { CountdownTimer } from './CountdownTimer';
 import { triggerConfetti } from '../confetti/Confetti';
-import { X, Gift, Copy } from 'lucide-react';
+import { X, Gift } from 'lucide-react';
 
 interface PrizeModalProps {
   isOpen: boolean;
@@ -12,53 +12,104 @@ interface PrizeModalProps {
 
 export const PrizeModal: React.FC<PrizeModalProps> = ({ isOpen, onClose, coupon }) => {
   useEffect(() => {
-    if (isOpen && coupon) {
-      triggerConfetti();
-    }
+    if (isOpen && coupon) triggerConfetti();
   }, [isOpen, coupon]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3c2f2f]/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#fff4e6] w-full max-w-md rounded-3xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
-        
-        {/* Close Button */}
-        <button 
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(13,33,87,0.55)', backdropFilter: 'blur(8px)' }}
+    >
+      <div
+        className="w-full max-w-md rounded-3xl overflow-hidden relative fade-up"
+        style={{
+          background: 'white',
+          boxShadow: '0 32px 80px rgba(13,33,87,0.25), 0 8px 32px rgba(0,0,0,0.1)',
+        }}
+      >
+        {/* Close */}
+        <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 bg-white/50 hover:bg-white rounded-full text-[#3c2f2f] transition-colors z-10"
+          className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:bg-slate-100 z-10"
+          style={{ color: '#94a3b8' }}
         >
-          <X size={20} />
+          <X size={18} />
         </button>
 
         {coupon ? (
           <div className="p-8 flex flex-col items-center text-center">
-            <div className="w-16 h-16 bg-[#d4a373] rounded-full flex items-center justify-center mb-6 shadow-inner">
-              <Gift size={32} className="text-[#3c2f2f]" />
-            </div>
-            
-            <h2 className="text-3xl font-black text-[#3c2f2f] mb-2 tracking-tight">You Won!</h2>
-            <p className="text-xl font-bold text-[#8b5a2b] mb-6">{coupon.rewardLabel}</p>
-            
-            <div className="w-full bg-white p-4 rounded-xl border-2 border-dashed border-[#cd853f] mb-6 relative group">
-              <p className="text-sm text-gray-500 uppercase tracking-widest mb-1 font-semibold">Your Code</p>
-              <p className="text-3xl font-mono font-black text-[#3c2f2f]">{coupon.code}</p>
+            {/* Icon */}
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #1a3a8f 0%, #0d2157 100%)' }}
+            >
+              <Gift size={28} className="text-white" />
             </div>
 
-            <p className="text-sm font-medium text-gray-500 mb-3 uppercase tracking-wider">Offer expires in</p>
+            {/* Heading */}
+            <p className="text-sm font-bold uppercase tracking-[0.15em] mb-1" style={{ color: '#94a3b8' }}>
+              Congratulations
+            </p>
+            <h2 className="text-4xl font-bold mb-1" style={{ color: '#0d2157', fontFamily: 'var(--font-display)' }}>
+              You Won!
+            </h2>
+            <p className="text-xl font-bold mb-8" style={{ color: '#c0392b' }}>
+              {coupon.rewardLabel}
+            </p>
+
+            {/* Code box */}
+            <div
+              className="w-full rounded-2xl p-5 mb-6"
+              style={{
+                background: '#f8faff',
+                border: '2px dashed #2352c8',
+              }}
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: '#94a3b8' }}>
+                Your Code
+              </p>
+              <p
+                className="text-3xl font-bold tracking-widest"
+                style={{ color: '#0d2157', fontFamily: 'monospace' }}
+              >
+                {coupon.code}
+              </p>
+            </div>
+
+            {/* Expiry */}
+            <p className="text-xs font-bold uppercase tracking-[0.15em] mb-3" style={{ color: '#94a3b8' }}>
+              Offer Expires In
+            </p>
             <CountdownTimer expiresAt={coupon.expiresAt} />
           </div>
         ) : (
-          <div className="p-8 flex flex-col items-center text-center">
-            <h2 className="text-3xl font-black text-[#3c2f2f] mb-2">Aw, Snap!</h2>
-            <p className="text-lg text-gray-600">Better luck next time. Grab a coffee and try again tomorrow!</p>
+          <div className="p-10 flex flex-col items-center text-center">
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+              style={{ background: '#f1f5f9' }}
+            >
+              <span className="text-3xl">😔</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-3" style={{ color: '#0d2157', fontFamily: 'var(--font-display)' }}>
+              Aw, Snap!
+            </h2>
+            <p className="text-slate-500 font-medium leading-relaxed">
+              Better luck next time. Grab a coffee and spin again in 2 hours!
+            </p>
           </div>
         )}
-        
-        <div className="bg-[#3c2f2f] p-4 text-center">
-          <button 
+
+        {/* Footer CTA */}
+        <div className="px-8 pb-8">
+          <button
             onClick={onClose}
-            className="text-[#fff4e6] font-bold text-lg hover:text-[#d4a373] transition-colors"
+            className="w-full py-4 rounded-2xl text-white font-bold text-base tracking-wide transition-all active:scale-95"
+            style={{
+              background: 'linear-gradient(135deg, #1a3a8f 0%, #0d2157 100%)',
+              boxShadow: '0 8px 24px rgba(13,33,87,0.3)',
+            }}
           >
             Awesome, thanks!
           </button>

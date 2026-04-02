@@ -1,67 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --cafe-dark: #3c2f2f;
-    --cafe-light: #fff4e6;
-    --cafe-caramel: #d4a373;
-    --cafe-mocha: #8b5a2b;
-    --cafe-accent: #cd853f;
+    --navy: #0d2157;
+    --navy-mid: #1a3a8f;
+    --navy-light: #2352c8;
+    --crimson: #c0392b;
+    --crimson-light: #e74c3c;
+    --ice: #eef3fc;
+    --ice-mid: #dce8f8;
+    --white: #ffffff;
+    --slate: #64748b;
+    --slate-light: #94a3b8;
+    --success: #16a34a;
+    --warning: #d97706;
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-  
+
+  * {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-[#fff4e6] text-[#3c2f2f] overflow-x-hidden;
+    background: var(--ice);
+    color: var(--navy);
+    overflow-x: hidden;
   }
 }
 
-/* Custom modern scrollbar for a premium feel */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--cafe-light);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--cafe-caramel);
-  border-radius: 4px;
-}
+/* ──────────────────────────────────────────────
+   SCROLLBAR
+────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ice); }
+::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 3px; }
 
-/* Ticker Animation */
+/* ──────────────────────────────────────────────
+   WINNER TICKER
+────────────────────────────────────────────── */
 @keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
-
 .animate-ticker {
-  display: inline-block;
+  display: inline-flex;
   white-space: nowrap;
-  animation: ticker 30s linear infinite;
+  animation: ticker 28s linear infinite;
 }
+.animate-ticker:hover { animation-play-state: paused; }
 
-/* Pause the ticker when someone hovers over it to read */
-.animate-ticker:hover {
-  animation-play-state: paused;
-}
-
-/* Add these below your ticker animation */
-
+/* ──────────────────────────────────────────────
+   FLOAT
+────────────────────────────────────────────── */
 @keyframes float {
-  0% { transform: translateY(0px) translateX(-50%); }
-  50% { transform: translateY(-10px) translateX(-50%); }
-  100% { transform: translateY(0px) translateX(-50%); }
+  0%, 100% { transform: translateY(0px) translateX(-50%); }
+  50%       { transform: translateY(-12px) translateX(-50%); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
+
+/* ──────────────────────────────────────────────
+   SPIN BUTTON SHIMMER
+────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.shimmer-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+  animation: shimmer 2.4s ease infinite;
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+/* ──────────────────────────────────────────────
+   GLASS CARD
+────────────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.8);
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(212, 163, 115, 0.4); }
-  50% { box-shadow: 0 0 40px rgba(212, 163, 115, 0.8); }
+/* ──────────────────────────────────────────────
+   NOISE TEXTURE OVERLAY
+────────────────────────────────────────────── */
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
 }
 
-.golden-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
+/* ──────────────────────────────────────────────
+   WHEEL GLOW RING
+────────────────────────────────────────────── */
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192,57,43,0.25), 0 20px 60px rgba(13,33,87,0.25); }
+  50%       { box-shadow: 0 0 0 18px rgba(192,57,43,0), 0 20px 60px rgba(13,33,87,0.35); }
+}
+.wheel-ring { animation: ring-pulse 3s ease-in-out infinite; }
+
+/* ──────────────────────────────────────────────
+   ANIMATE IN
+────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.12s; }
+.fade-up-3 { animation-delay: 0.20s; }
+
+/* ──────────────────────────────────────────────
+   BACKGROUND PATTERN
+────────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(13,33,87,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(192,57,43,0.05) 0%, transparent 40%),
+    linear-gradient(135deg, #eef3fc 0%, #dce8f8 100%);
+}
+
+.bg-hero {
+  background: linear-gradient(145deg, #0d2157 0%, #1a3a8f 50%, #0d2157 100%);
+}
+
+/* Concentric ring decorations */
+.concentric-rings::after {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 0 0 60px rgba(255,255,255,0.025),
+    0 0 0 120px rgba(255,255,255,0.015),
+    0 0 0 200px rgba(255,255,255,0.01);
+  pointer-events: none;
+}
+
+/* ──────────────────────────────────────────────
+   COUPON CARD HOVER
+────────────────────────────────────────────── */
+.coupon-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.coupon-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(13,33,87,0.12);
+}
+
+/* ──────────────────────────────────────────────
+   PULSE DOT (live indicator)
+────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.5); opacity: 0.5; }
+}
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+/* ──────────────────────────────────────────────
+   CHECKMARK DRAW
+────────────────────────────────────────────── */
+@keyframes draw-check {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+.draw-check {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw-check 0.6s 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
 }
